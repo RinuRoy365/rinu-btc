@@ -30,6 +30,14 @@
   .stat-label { color: var(--muted); font-size: 11px; letter-spacing: .8px; text-transform: uppercase; }
   .stat-value { font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 4px; }
 
+  /* countdown */
+  .cd { text-align: center; border-color: var(--btc); }
+  .cd-date { font-size: 18px; font-weight: 700; color: var(--btc); margin-top: 4px; }
+  .cd-box { display: flex; justify-content: center; gap: 22px; margin-top: 14px; font-variant-numeric: tabular-nums; }
+  .cd-num { font-size: 34px; font-weight: 700; }
+  .cd-lbl { color: var(--muted); font-size: 11px; letter-spacing: .8px; text-transform: uppercase; }
+  .cd-note { color: var(--muted); font-size: 12px; margin-top: 12px; }
+
   /* charts */
   .tv-box { height: 480px; }
   .tv-box .tradingview-widget-container, .tv-box .tradingview-widget-container__widget { height: 100%; width: 100%; }
@@ -46,19 +54,27 @@
   .note:last-child { border-bottom: 0; }
   .note time { display: block; color: var(--muted); font-size: 12px; margin-bottom: 2px; }
   .note p { font-size: 14px; color: #cfd5db; }
+  .picks { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .picks-title { color: var(--btc); font-weight: 700; font-size: 14px; letter-spacing: .5px; }
+  .picks-sub { color: var(--muted); font-size: 12px; margin: 2px 0 10px; }
 
   /* bar graph */
-  .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
   .tabs button { background: transparent; color: var(--muted); border: 1px solid var(--line); border-radius: 8px; padding: 8px 14px; font-size: 13px; cursor: pointer; }
   .tabs button.on { color: #111; background: var(--btc); border-color: var(--btc); font-weight: 600; }
-  .bar-row { display: grid; grid-template-columns: 52px 1fr 70px; align-items: center; gap: 10px; padding: 6px 0; font-size: 14px; }
-  .bar-name { font-weight: 600; }
-  .bar-track { position: relative; height: 18px; background: #0d1116; border-radius: 4px; }
+  .group-title { font-size: 14px; font-weight: 700; margin: 18px 0 2px; }
+  .group-sub { color: var(--muted); font-size: 12px; margin-bottom: 6px; }
+  .bar-row { display: grid; grid-template-columns: 96px 1fr 96px; align-items: center; gap: 10px; padding: 7px 0; font-size: 14px; border-bottom: 1px solid #1a2027; }
+  .bar-row:last-child { border-bottom: 0; }
+  .bar-name { font-weight: 700; }
+  .bar-price { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .bar-track { position: relative; height: 20px; background: #0d1116; border-radius: 4px; }
   .bar-track::after { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--line); }
   .bar { position: absolute; top: 0; bottom: 0; border-radius: 3px; transition: all .3s; }
   .bar.pos { left: 50%; background: var(--up); }
   .bar.neg { right: 50%; background: var(--down); }
-  .bar-val { text-align: right; font-variant-numeric: tabular-nums; }
+  .bar-val { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+  .bar-diff { font-size: 12px; font-weight: 400; }
 
   /* stocks */
   .stocks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
@@ -78,6 +94,9 @@
     .stocks { grid-template-columns: 1fr; }
     .tv-box { height: 420px; }
     #analysisChart { height: 360px; }
+    .cd-box { gap: 14px; }
+    .cd-num { font-size: 26px; }
+    .bar-row { grid-template-columns: 78px 1fr 82px; gap: 8px; }
   }
 </style>
 </head>
@@ -98,45 +117,6 @@
 
 <main>
 
-   <!-- COUNTDOWN -->
-  <section id="countdown">
-    <div class="card" style="text-align:center; border-color:#f7931a;">
-      <div class="stat-label">My view: BTC bear market ends</div>
-      <div id="cdDate" style="font-size:18px; font-weight:700; color:#f7931a; margin-top:4px;"></div>
-      <div id="cdBox" style="display:flex; justify-content:center; gap:22px; margin-top:14px; font-variant-numeric:tabular-nums;"></div>
-      <div id="cdNote" style="color:#8b949e; font-size:12px; margin-top:12px;">My personal prediction, not financial advice.</div>
-    </div>
-  </section>
-  <script>
-  (function () {
-    var TARGET = new Date("2026-10-09T00:00:00Z");
-
-    document.getElementById("cdDate").textContent =
-      TARGET.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
-
-    function part(value, label) {
-      return '<div><div style="font-size:34px; font-weight:700;">' + value + '</div>' +
-             '<div style="color:#8b949e; font-size:11px; letter-spacing:.8px; text-transform:uppercase;">' + label + '</div></div>';
-    }
-
-    function tick() {
-      var diff = TARGET - new Date();
-      var box = document.getElementById("cdBox");
-      if (diff <= 0) {
-        var since = Math.floor(-diff / 86400000);
-        box.innerHTML = part(since, since === 1 ? "day since my date" : "days since my date");
-        return;
-      }
-      var d = Math.floor(diff / 86400000);
-      var h = Math.floor(diff / 3600000) % 24;
-      var m = Math.floor(diff / 60000) % 60;
-      var s = Math.floor(diff / 1000) % 60;
-      box.innerHTML = part(d, "days") + part(h, "hours") + part(m, "minutes") + part(s, "seconds");
-    }
-    tick();
-    setInterval(tick, 1000);
-  })();
-  </script>
   <!-- TOP NUMBERS (live) -->
   <div class="stats">
     <div class="card"><div class="stat-label">Bitcoin price</div><div class="stat-value" id="sPrice">…</div></div>
@@ -144,6 +124,16 @@
     <div class="card"><div class="stat-label">24h high</div><div class="stat-value" id="sHigh">…</div></div>
     <div class="card"><div class="stat-label">24h low</div><div class="stat-value" id="sLow">…</div></div>
   </div>
+
+  <!-- COUNTDOWN -->
+  <section id="countdown">
+    <div class="card cd">
+      <div class="stat-label" id="cdTitle"></div>
+      <div class="cd-date" id="cdDate"></div>
+      <div class="cd-box" id="cdBox"></div>
+      <div class="cd-note">My personal prediction, not financial advice.</div>
+    </div>
+  </section>
 
   <!-- LIVE CHART -->
   <section id="live">
@@ -165,35 +155,10 @@
         <h2>My view</h2>
         <div id="viewRows"></div>
         <div id="notes"></div>
-                <!-- TOP 5 STOCKS BOX -->
-        <div style="margin-top:18px; padding-top:14px; border-top:1px solid #232a32;">
-          <div style="color:#f7931a; font-weight:700; font-size:14px; letter-spacing:.5px;">TOP 5 STOCKS TO BUY NOW FOR BTC BULL RUN</div>
-          <div style="color:#8b949e; font-size:12px; margin:2px 0 10px;">Live price, with my buy range beside each ticker. My personal picks, not financial advice.</div>
-          <div class="tradingview-widget-container">
-            <div class="tradingview-widget-container__widget"></div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
-            {
-              "width": "100%",
-              "height": 330,
-              "symbolsGroups": [
-                {
-                  "name": "My top 5",
-                  "symbols": [
-                    { "name": "NASDAQ:MSTR", "displayName": "1. MSTR · below $120" },
-                    { "name": "NASDAQ:ASST", "displayName": "2. ASST · below $15" },
-                    { "name": "OTC:MTPLF",   "displayName": "3. MTPLF · below $2" },
-                    { "name": "NYSE:CRCL",   "displayName": "4. CRCL · below $75" },
-                    { "name": "NASDAQ:COIN", "displayName": "5. COIN · below $175" }
-                  ]
-                }
-              ],
-              "showSymbolLogo": true,
-              "isTransparent": true,
-              "colorTheme": "dark",
-              "locale": "en"
-            }
-            </script>
-          </div>
+        <div class="picks">
+          <div class="picks-title" id="picksTitle"></div>
+          <div class="picks-sub">Live price, with my buy range beside each ticker. My personal picks, not financial advice.</div>
+          <div id="picksBox"></div>
         </div>
       </div>
     </div>
@@ -202,49 +167,23 @@
   <!-- PERFORMANCE BAR GRAPH -->
   <section id="performance">
     <h2>Performance</h2>
-    <p class="sub">Price change over the selected period (live data).</p>
+    <p class="sub">Current price, and how much it has changed over the selected period.</p>
     <div class="card">
       <div class="tabs" id="tabs"></div>
-      <div id="bars">Loading…</div>
-            <!-- STOCK PERFORMANCE -->
-      <div style="margin-top:22px; padding-top:16px; border-top:1px solid #232a32;">
-        <div style="font-weight:700; font-size:15px;">My 5 stocks: performance compared</div>
-        <div style="color:#8b949e; font-size:12px; margin:2px 0 10px;">Percentage change of each stock over the same period. Use the buttons under the chart to change the period.</div>
-        <div style="height:420px;">
-          <div class="tradingview-widget-container" style="height:100%; width:100%;">
-            <div class="tradingview-widget-container__widget" style="height:100%; width:100%;"></div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-            {
-              "autosize": true,
-              "symbol": "NASDAQ:MSTR",
-              "interval": "D",
-              "range": "12M",
-              "timezone": "Etc/UTC",
-              "theme": "dark",
-              "style": "2",
-              "locale": "en",
-              "hide_top_toolbar": true,
-              "hide_side_toolbar": true,
-              "allow_symbol_change": false,
-              "withdateranges": true,
-              "compareSymbols": [
-                { "symbol": "NASDAQ:ASST", "position": "SameScale" },
-                { "symbol": "OTC:MTPLF",   "position": "SameScale" },
-                { "symbol": "NYSE:CRCL",   "position": "SameScale" },
-                { "symbol": "NASDAQ:COIN", "position": "SameScale" }
-              ],
-              "support_host": "https://www.tradingview.com"
-            }
-            </script>
-          </div>
-        </div>
-      </div>
+
+      <div class="group-title">Top crypto</div>
+      <div class="group-sub">Live prices from Binance.</div>
+      <div id="coinBars">Loading…</div>
+
+      <div class="group-title">My 5 stocks</div>
+      <div class="group-sub" id="stockStamp">Loading…</div>
+      <div id="stockBars"></div>
     </div>
   </section>
 
   <!-- STOCKS -->
   <section id="stocks">
-    <h2>Bitcoin-related stocks I'm watching</h2>
+    <h2>My 5 stocks: charts</h2>
     <p class="sub">Price, change and one-year chart for each.</p>
     <div class="stocks" id="stockGrid"></div>
   </section>
@@ -275,6 +214,12 @@ const CONFIG = {
     { date: "3 Oct 2026", text: "Replace this with your first note. Keep each one to two or three lines." }
   ],
 
+  // Countdown box. Date format: YEAR-MONTH-DAY, then the time.
+  countdown: {
+    title: "My view: BTC bear market ends",
+    date: "2026-10-09T00:00:00Z"
+  },
+
   // Your key levels on the analysis chart.
   // Copy a line, change the price, label and colour.
   levels: [
@@ -285,31 +230,41 @@ const CONFIG = {
   // Also mark the 90-day high and low automatically? (true / false)
   autoHighLow: true,
 
-  // Coins in the bar graph (Binance symbols ending in USDT)
-      coins: [
-       ["BTC", "BTCUSDT"], ["ETH", "ETHUSDT"], ["BNB", "BNBUSDT"],
-       ["SOL", "SOLUSDT"], ["TAO", "TAOUSDT"], ["HYPE", "HYPEUSDT"],
-       ["ZEC", "ZECUSDT"], ["QNT", "QNTUSDT"]
-     ],
+  // Coins in the bar graph, in this order (Binance symbols ending in USDT)
+  coins: [
+    ["BTC", "BTCUSDT"], ["ETH", "ETHUSDT"], ["BNB", "BNBUSDT"],
+    ["SOL", "SOLUSDT"], ["TAO", "TAOUSDT"], ["HYPE", "HYPEUSDT"],
+    ["ZEC", "ZECUSDT"], ["QNT", "QNTUSDT"]
+  ],
 
-  // Stocks. symbol = TradingView symbol (EXCHANGE:TICKER)
+  // Heading of the stock box inside "My view"
+  picksTitle: "TOP 5 STOCKS TO BUY NOW FOR BTC BULL RUN",
+
+  // Your 5 stocks. symbol = TradingView symbol (EXCHANGE:TICKER)
   stocks: [
-    { symbol: "NASDAQ:MSTR", name: "Strategy",          note: "Your one-line view here." },
-    { symbol: "NASDAQ:COIN", name: "Coinbase",          note: "Your one-line view here." },
-    { symbol: "NASDAQ:MARA", name: "MARA Holdings",     note: "Your one-line view here." },
-    { symbol: "NASDAQ:RIOT", name: "Riot Platforms",    note: "Your one-line view here." },
-    { symbol: "NASDAQ:ASST", name: "Strive",            note: "Your one-line view here." },
-    { symbol: "NASDAQ:IBIT", name: "iShares Bitcoin ETF", note: "Your one-line view here." }
-  ]
+    { symbol: "NASDAQ:MSTR", name: "Strategy",       buy: "below $120", note: "Your one-line view here." },
+    { symbol: "NASDAQ:ASST", name: "Strive",         buy: "below $15",  note: "Your one-line view here." },
+    { symbol: "OTC:MTPLF",   name: "Metaplanet",     buy: "below $2",   note: "Your one-line view here." },
+    { symbol: "NYSE:CRCL",   name: "Circle",         buy: "below $75",  note: "Your one-line view here." },
+    { symbol: "NASDAQ:COIN", name: "Coinbase",       buy: "below $175", note: "Your one-line view here." }
+  ],
+
+  // Where the stock bar graph reads its numbers from (made by the "Update stock data" action)
+  stocksUrl: "https://raw.githubusercontent.com/RinuRoy365/rinu-btc/main/stocks.json"
 };
 /* ======================= END OF EDIT SECTION ======================= */
 
 
 const API = "https://data-api.binance.vision/api/v3";
 const $ = id => document.getElementById(id);
-const usd = n => "$" + Number(n).toLocaleString("en-US", { maximumFractionDigits: n < 10 ? 4 : 0 });
+const usd = n => {
+  const a = Math.abs(n);
+  const d = a >= 1000 ? 0 : a >= 10 ? 2 : a >= 1 ? 3 : 4;
+  return "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: a >= 1000 ? 0 : 2, maximumFractionDigits: d });
+};
 const pct = n => (n >= 0 ? "+" : "") + n.toFixed(2) + "%";
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const ticker = s => s.symbol.split(":")[1];
 
 /* ---------- TradingView widget helper ---------- */
 function tvWidget(target, file, cfg) {
@@ -348,11 +303,40 @@ async function loadStats() {
 loadStats();
 setInterval(loadStats, 20000);
 
-/* ---------- My view + notes ---------- */
+/* ---------- Countdown ---------- */
+(function () {
+  const target = new Date(CONFIG.countdown.date);
+  $("cdTitle").textContent = CONFIG.countdown.title;
+  $("cdDate").textContent = target.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+  const part = (v, l) => '<div><div class="cd-num">' + v + '</div><div class="cd-lbl">' + l + "</div></div>";
+  function tick() {
+    const diff = target - new Date();
+    if (diff <= 0) {
+      const since = Math.floor(-diff / 86400000);
+      $("cdBox").innerHTML = part(since, since === 1 ? "day since my date" : "days since my date");
+      return;
+    }
+    $("cdBox").innerHTML =
+      part(Math.floor(diff / 86400000), "days") + part(Math.floor(diff / 3600000) % 24, "hours") +
+      part(Math.floor(diff / 60000) % 60, "minutes") + part(Math.floor(diff / 1000) % 60, "seconds");
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+
+/* ---------- My view + notes + top 5 box ---------- */
 $("viewRows").innerHTML = CONFIG.view.map(r =>
   '<div class="view-row"><span>' + esc(r[0]) + "</span><span>" + esc(r[1]) + "</span></div>").join("");
 $("notes").innerHTML = CONFIG.notes.map(n =>
   '<div class="note"><time>' + esc(n.date) + "</time><p>" + esc(n.text) + "</p></div>").join("");
+$("picksTitle").textContent = CONFIG.picksTitle;
+tvWidget($("picksBox"), "embed-widget-market-quotes.js", {
+  width: "100%", height: 330, showSymbolLogo: true, isTransparent: true, colorTheme: "dark", locale: "en",
+  symbolsGroups: [{
+    name: "My top 5",
+    symbols: CONFIG.stocks.map((s, i) => ({ name: s.symbol, displayName: (i + 1) + ". " + ticker(s) + " · " + s.buy }))
+  }]
+});
 
 /* ---------- Analysis chart with my levels ---------- */
 async function loadAnalysis() {
@@ -407,21 +391,29 @@ async function loadAnalysis() {
 loadAnalysis();
 
 /* ---------- Performance bar graph ---------- */
-const PERIODS = [["1D", 1], ["1W", 7], ["1M", 30], ["1Y", 365]];
-let perf = [];      // [{name, changes:{1:..,7:..}}]
+const PERIODS = [["1 Day", 1], ["1 Week", 7], ["1 Month", 30], ["6 Months", 182], ["1 Year", 365]];
+let coinPerf = [];    // [{name, price, changes:{1:..}, diffs:{1:..}}]
+let stockPerf = [];
 let period = 7;
 
-function drawBars() {
-  const data = perf.filter(p => p.changes[period] != null)
-                   .sort((a, b) => b.changes[period] - a.changes[period]);
-  if (!data.length) { $("bars").textContent = "No data for this period."; return; }
-  const max = Math.max(...data.map(p => Math.abs(p.changes[period])), 1);
-  $("bars").innerHTML = data.map(p => {
-    const v = p.changes[period], w = (Math.abs(v) / max * 50).toFixed(1);
-    return '<div class="bar-row"><div class="bar-name">' + esc(p.name) + '</div>' +
+function drawGroup(el, data, emptyText) {
+  const rows = data.filter(p => p.changes[period] != null);
+  if (!rows.length) { el.textContent = emptyText; return; }
+  const max = Math.max(...rows.map(p => Math.abs(p.changes[period])), 1);
+  el.innerHTML = rows.map(p => {
+    const v = p.changes[period], d = p.diffs[period], cls = v >= 0 ? "up" : "down";
+    const w = (Math.abs(v) / max * 50).toFixed(1);
+    return '<div class="bar-row">' +
+      '<div><div class="bar-name">' + esc(p.name) + '</div><div class="bar-price">' + usd(p.price) + "</div></div>" +
       '<div class="bar-track"><div class="bar ' + (v >= 0 ? "pos" : "neg") + '" style="width:' + w + '%"></div></div>' +
-      '<div class="bar-val ' + (v >= 0 ? "up" : "down") + '">' + pct(v) + "</div></div>";
+      '<div class="bar-val ' + cls + '"><div>' + pct(v) + '</div><div class="bar-diff">' +
+        (d >= 0 ? "+" : "−") + usd(Math.abs(d)) + "</div></div></div>";
   }).join("");
+}
+
+function drawBars() {
+  drawGroup($("coinBars"), coinPerf, "No coin data for this period.");
+  drawGroup($("stockBars"), stockPerf, "");
 }
 
 function drawTabs() {
@@ -432,31 +424,59 @@ function drawTabs() {
   });
 }
 
-async function loadPerf() {
+async function loadCoins() {
   const out = await Promise.all(CONFIG.coins.map(async c => {
     try {
       const rows = await (await fetch(API + "/klines?symbol=" + c[1] + "&interval=1d&limit=366")).json();
-      const closes = rows.map(k => +k[4]), n = closes.length, changes = {};
+      const closes = rows.map(k => +k[4]), n = closes.length, price = closes[n - 1];
+      const changes = {}, diffs = {};
       PERIODS.forEach(p => {
-        if (n > p[1]) changes[p[1]] = (closes[n - 1] / closes[n - 1 - p[1]] - 1) * 100;
+        if (n > p[1]) {
+          const ref = closes[n - 1 - p[1]];
+          changes[p[1]] = (price / ref - 1) * 100;
+          diffs[p[1]] = price - ref;
+        }
       });
-      return { name: c[0], changes };
+      return { name: c[0], price, changes, diffs };
     } catch (e) { return null; }
   }));
-  perf = out.filter(Boolean);
+  coinPerf = out.filter(Boolean);
   drawBars();
 }
-drawTabs();
-loadPerf();
-setInterval(loadPerf, 60000);
 
-/* ---------- Stocks ---------- */
+async function loadStocks() {
+  let data = null;
+  for (const url of [CONFIG.stocksUrl, "stocks.json"]) {
+    try {
+      const r = await fetch(url + "?t=" + Date.now());
+      if (r.ok) { data = await r.json(); break; }
+    } catch (e) { /* try the next address */ }
+  }
+  if (!data || !data.stocks) {
+    $("stockStamp").textContent = "Stock data has not been created yet. Run the \"Update stock data\" action on GitHub.";
+    return;
+  }
+  stockPerf = data.stocks;
+  const when = new Date(data.updated);
+  $("stockStamp").textContent = "Prices last updated " +
+    when.toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) +
+    " (your local time). Refreshed about every 30 minutes while the US market is open.";
+  drawBars();
+}
+
+drawTabs();
+loadCoins();
+loadStocks();
+setInterval(loadCoins, 60000);
+setInterval(loadStocks, 300000);
+
+/* ---------- Stock cards ---------- */
 CONFIG.stocks.forEach(s => {
   const card = document.createElement("div");
   card.className = "card";
   card.innerHTML =
-    '<div class="stock-head"><span class="stock-sym">' + esc(s.symbol.split(":")[1]) + '</span>' +
-    '<span class="stock-name">' + esc(s.name) + '</span></div>' +
+    '<div class="stock-head"><span class="stock-sym">' + esc(ticker(s)) + '</span>' +
+    '<span class="stock-name">' + esc(s.name) + " · buy " + esc(s.buy) + '</span></div>' +
     '<p class="stock-note">' + esc(s.note) + '</p><div class="stock-chart"></div>';
   $("stockGrid").appendChild(card);
   tvWidget(card.querySelector(".stock-chart"), "embed-widget-mini-symbol-overview.js", {
