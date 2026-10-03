@@ -206,6 +206,39 @@
     <div class="card">
       <div class="tabs" id="tabs"></div>
       <div id="bars">Loading…</div>
+            <!-- STOCK PERFORMANCE -->
+      <div style="margin-top:22px; padding-top:16px; border-top:1px solid #232a32;">
+        <div style="font-weight:700; font-size:15px;">My 5 stocks: performance compared</div>
+        <div style="color:#8b949e; font-size:12px; margin:2px 0 10px;">Percentage change of each stock over the same period. Use the buttons under the chart to change the period.</div>
+        <div style="height:420px;">
+          <div class="tradingview-widget-container" style="height:100%; width:100%;">
+            <div class="tradingview-widget-container__widget" style="height:100%; width:100%;"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+            {
+              "autosize": true,
+              "symbol": "NASDAQ:MSTR",
+              "interval": "D",
+              "range": "12M",
+              "timezone": "Etc/UTC",
+              "theme": "dark",
+              "style": "2",
+              "locale": "en",
+              "hide_top_toolbar": true,
+              "hide_side_toolbar": true,
+              "allow_symbol_change": false,
+              "withdateranges": true,
+              "compareSymbols": [
+                { "symbol": "NASDAQ:ASST", "position": "SameScale" },
+                { "symbol": "OTC:MTPLF",   "position": "SameScale" },
+                { "symbol": "NYSE:CRCL",   "position": "SameScale" },
+                { "symbol": "NASDAQ:COIN", "position": "SameScale" }
+              ],
+              "support_host": "https://www.tradingview.com"
+            }
+            </script>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -253,10 +286,11 @@ const CONFIG = {
   autoHighLow: true,
 
   // Coins in the bar graph (Binance symbols ending in USDT)
-  coins: [
-    ["BTC", "BTCUSDT"], ["ETH", "ETHUSDT"], ["SOL", "SOLUSDT"],
-    ["XRP", "XRPUSDT"], ["BNB", "BNBUSDT"], ["DOGE", "DOGEUSDT"]
-  ],
+      coins: [
+       ["BTC", "BTCUSDT"], ["ETH", "ETHUSDT"], ["BNB", "BNBUSDT"],
+       ["SOL", "SOLUSDT"], ["TAO", "TAOUSDT"], ["HYPE", "HYPEUSDT"],
+       ["ZEC", "ZECUSDT"], ["QNT", "QNTUSDT"]
+     ],
 
   // Stocks. symbol = TradingView symbol (EXCHANGE:TICKER)
   stocks: [
