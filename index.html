@@ -165,6 +165,36 @@
         <h2>My view</h2>
         <div id="viewRows"></div>
         <div id="notes"></div>
+                <!-- TOP 5 STOCKS BOX -->
+        <div style="margin-top:18px; padding-top:14px; border-top:1px solid #232a32;">
+          <div style="color:#f7931a; font-weight:700; font-size:14px; letter-spacing:.5px;">TOP 5 STOCKS TO BUY NOW FOR BTC BULL RUN</div>
+          <div style="color:#8b949e; font-size:12px; margin:2px 0 10px;">Live price, with my buy range beside each ticker. My personal picks, not financial advice.</div>
+          <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+            {
+              "width": "100%",
+              "height": 330,
+              "symbolsGroups": [
+                {
+                  "name": "My top 5",
+                  "symbols": [
+                    { "name": "NASDAQ:MSTR", "displayName": "1. MSTR · below $120" },
+                    { "name": "NASDAQ:ASST", "displayName": "2. ASST · below $15" },
+                    { "name": "OTC:MTPLF",   "displayName": "3. MTPLF · below $2" },
+                    { "name": "NYSE:CRCL",   "displayName": "4. CRCL · below $75" },
+                    { "name": "NASDAQ:COIN", "displayName": "5. COIN · below $175" }
+                  ]
+                }
+              ],
+              "showSymbolLogo": true,
+              "isTransparent": true,
+              "colorTheme": "dark",
+              "locale": "en"
+            }
+            </script>
+          </div>
+        </div>
       </div>
     </div>
   </section>
