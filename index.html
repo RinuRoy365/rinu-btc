@@ -98,6 +98,45 @@
 
 <main>
 
+   <!-- COUNTDOWN -->
+  <section id="countdown">
+    <div class="card" style="text-align:center; border-color:#f7931a;">
+      <div class="stat-label">My view: BTC bear market ends</div>
+      <div id="cdDate" style="font-size:18px; font-weight:700; color:#f7931a; margin-top:4px;"></div>
+      <div id="cdBox" style="display:flex; justify-content:center; gap:22px; margin-top:14px; font-variant-numeric:tabular-nums;"></div>
+      <div id="cdNote" style="color:#8b949e; font-size:12px; margin-top:12px;">My personal prediction, not financial advice.</div>
+    </div>
+  </section>
+  <script>
+  (function () {
+    var TARGET = new Date("2026-10-09T00:00:00Z");
+
+    document.getElementById("cdDate").textContent =
+      TARGET.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+
+    function part(value, label) {
+      return '<div><div style="font-size:34px; font-weight:700;">' + value + '</div>' +
+             '<div style="color:#8b949e; font-size:11px; letter-spacing:.8px; text-transform:uppercase;">' + label + '</div></div>';
+    }
+
+    function tick() {
+      var diff = TARGET - new Date();
+      var box = document.getElementById("cdBox");
+      if (diff <= 0) {
+        var since = Math.floor(-diff / 86400000);
+        box.innerHTML = part(since, since === 1 ? "day since my date" : "days since my date");
+        return;
+      }
+      var d = Math.floor(diff / 86400000);
+      var h = Math.floor(diff / 3600000) % 24;
+      var m = Math.floor(diff / 60000) % 60;
+      var s = Math.floor(diff / 1000) % 60;
+      box.innerHTML = part(d, "days") + part(h, "hours") + part(m, "minutes") + part(s, "seconds");
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+  </script>
   <!-- TOP NUMBERS (live) -->
   <div class="stats">
     <div class="card"><div class="stat-label">Bitcoin price</div><div class="stat-value" id="sPrice">…</div></div>
